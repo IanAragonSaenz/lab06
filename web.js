@@ -1,8 +1,3 @@
-const txtName = document.getElementById("productName");
-const txtPrice = document.getElementById("productPrice");
-const txtBrand = document.getElementById("productBrand");
-const btnAdd = document.getElementById("add");
-btnAdd.addEventListener('click', addProduct);
 const cart = document.getElementById("cart");
 const totalLabel = document.getElementById("total");
 
@@ -18,7 +13,7 @@ class Product{
 var getProducts = new XMLHttpRequest();
 getProducts.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
-	console.log(this.responseText);
+	//console.log(this.responseText);
 	var productData = this.responseText;
 	var productData = JSON.parse(productData);
 	productData.forEach(prod => {
@@ -27,41 +22,11 @@ getProducts.onreadystatechange = function() {
 	});		
 	updateList();
     updateTotal();
-    prepareForm();
   } 
 }
 getProducts.open("GET", "http://127.0.0.1:3000/products", true);
 getProducts.send();
 
-function addProduct(event){
-    event.preventDefault();
-    let name = txtName.value.trim();
-    let price = txtPrice.value.trim();
-	let brand = txtBrand.value.trim()
-
-    let validationMsg = validate(name, price);
-    if (validationMsg != ''){
-        alert(validationMsg);
-        return;
-    }
-    
-    let product = new Product(name, parseFloat(price), brand);
-	let url = 'http://127.0.0.1:3000/addProduct?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
-	
-	var addProduct = new XMLHttpRequest();
-	addProduct.onreadystatechange = function() {
-	  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
-		console.log(this.responseText);		
-	  } 
-	}
-	addProduct.open("POST", url, true);
-	addProduct.send();
-	
-    addProductToCart(product);
-    updateList();
-    updateTotal();
-    prepareForm();
-}
 
 function updateList(){
     clearCart();
@@ -72,7 +37,7 @@ function updateList(){
         let pricePart = document.createElement('span');
         pricePart.appendChild(document.createTextNode(`$${product.price}`));
 		let brandPart = document.createElement('span');
-        brandPart.appendChild(document.createTextNode(`$${product.brand}`));
+        brandPart.appendChild(document.createTextNode(`  ${product.brand}`));
 
         // complete the remove functionality
         btnRemove = document.createElement("button");
@@ -139,14 +104,6 @@ function updateTotal(){
 function addProductToCart(product){
     products.push(product);
 }
-
-function prepareForm(){
-    txtName.value='';
-    txtPrice.value='';
-	txtBrand.value='';
-    txtName.focus();
-}
-
 
 
 function validate(name, price){

@@ -19,6 +19,10 @@ app.get('/', (req, res) => {
     res.sendFile("./shopping-cart.html", {root: __dirname});    
 });
 
+app.get('/add', (req, res) => {
+    res.sendFile("./add.html", {root: __dirname});    
+});
+
 app.post('/edit', (req, res) => {
 	let nameParam = req.query.name;
 	let priceParam = req.query.price;  
