@@ -7,6 +7,8 @@ app.use(cors());
 var MongoClient = require('mongodb').MongoClient
 var collection;
 
+app.use(express.static('./'))
+
 const uri = "mongodb+srv://wanderer:hahaesto123@cluster0.6qswt.mongodb.net/cartDB?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true}, { useNewUrlParser: true }, { connectTimeoutMS: 30000 }, { keepAlive: 1});
 client.connect(err => {

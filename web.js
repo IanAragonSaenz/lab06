@@ -21,8 +21,8 @@ getProducts.onreadystatechange = function() {
 	console.log(this.responseText);
 	var productData = this.responseText;
 	var productData = JSON.parse(productData);
-	productData.forEach(product => {
-		let product = new Product(product.name, parseFloat(product.price), product.brand);
+	productData.forEach(prod => {
+		let product = new Product(prod.name, parseFloat(prod.price), prod.brand);
 		addProductToCart(product);
 	});		
 	updateList();
@@ -46,7 +46,7 @@ function addProduct(event){
     }
     
     let product = new Product(name, parseFloat(price), brand);
-	let url = 'http://127.0.0.1:3000/removeProduct?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
+	let url = 'http://127.0.0.1:3000/addProduct?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
     
 	var addProduct = new XMLHttpRequest();
 	addProduct.onreadystatechange = function() {
