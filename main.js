@@ -16,11 +16,28 @@ client.connect(err => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile("./shopping-cart.html", {root: __dirname});
+    res.sendFile("./shopping-cart.html", {root: __dirname});    
 });
 
+app.post('/edit', (req, res) => {
+	let nameParam = req.query.name;
+	let priceParam = req.query.price;  
+	let brandParam = req.query.brand;
+	successRedirect : '/edit-product' 
+    res.redirect("/edit-product");   
+	console.log("what");
+	
+});
+
+app.post('/edit-product', (req, res) => {
+	res.sendFile("./edit-product.html", {root: __dirname});  ;  
+	console.log("what");
+	
+});
+
+
 app.route('/products').get(async function(req, res){  
-    let products = await collection.find().toArray();
+    let products = await collection.find().toArray(); 
     res.send(products);
 });
 

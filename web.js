@@ -82,12 +82,27 @@ function updateList(){
             cart.removeChild(li);
             updateTotal();
         });
+		
+		btnEdit = document.createElement("button");
+        btnEdit.appendChild(document.createTextNode("Edit"));
+        btnEdit.addEventListener("click", ()=>{
+			let url = 'http://127.0.0.1:3000/edit?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
+            var deleteProduct = new XMLHttpRequest();
+			deleteProduct.onreadystatechange = function() {
+			  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
+				console.log(this.responseText);		
+			  } 
+			}
+			deleteProduct.open("POST", url, true);
+			deleteProduct.send();
+        });
 
         li.appendChild(namePart);
         li.appendChild(document.createTextNode(': '));
         li.appendChild(pricePart);
 		li.appendChild(brandPart);
         li.appendChild(btnRemove);
+		li.appendChild(btnEdit);
 
         cart.appendChild(li);
     });
