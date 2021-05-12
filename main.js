@@ -41,11 +41,11 @@ app.post('/addProduct', function (req, res) {
     let nameParam = req.query.name;
 	let priceParam = req.query.price;
 	let brandParam = req.query.brand;
-   
+   console.log(req.query);
 	collection.insertOne({
-		name: name,
-		price: img,
-		brand: weigth,
+		name: nameParam,
+		price: priceParam,
+		brand: brandParam,
 	}, function(err, res) {
 		if (err) throw err;
 		console.log("1 document inserted");
