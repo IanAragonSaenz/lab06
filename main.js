@@ -22,7 +22,7 @@ app.route('/products').get(async function(req, res){
     res.send(products);
 });
 
-app.post('/product', function (req, res) {
+app.post('/removeProduct', function (req, res) {
 
     let nameParam = req.query.name;
 	collection.deleteOne({
@@ -33,41 +33,24 @@ app.post('/product', function (req, res) {
 	});
 })
 
-/* No creo que necesitemos un get en este lab
-app.get('/pokemon', function (req, res) {
+
+app.post('/addProduct', function (req, res) {
 
     let nameParam = req.query.name;
-    const URL = 'https://pokeapi.co/api/v2/pokemon/';
-	const prefixImage = "https://pokeres.bastionbot.org/images/pokemon/";
+	let priceParam = req.query.price;
+	let brandParam = req.query.brand;
+   
+	collection.insertOne({
+		name: name,
+		price: img,
+		brand: weigth,
+	}, function(err, res) {
+		if (err) throw err;
+		console.log("1 document inserted");
+	});
 
-    axios.get(URL+nameParam)
-    .then(pokemon_response => {
-		var pokemonData = pokemon_response.data;
-
-		var type = pokemonData.types["0"].type.name;
-		var weigth =  pokemonData.weight;
-		var img = prefixImage + pokemonData.id + ".png";
-		var name = pokemonData.name;
-		
-		var str = JSON.stringify({name: name, img: img, weigth: weigth, type: type});
-		collection.insertOne({
-			name: name,
-			img: img,
-			weigth: weigth,
-			type: type
-		}, function(err, res) {
-			if (err) throw err;
-			console.log("1 document inserted");
-		});
-		
-        console.log("I am making a request to " + URL);
-        res.send(str);
-    }).catch(function(error){
-        console.log(error);
-        res.status(404).send('the pokemon does not exist');
-    });
   })
- */
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

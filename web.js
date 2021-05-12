@@ -1,22 +1,43 @@
-btnAdd.addEventListener('click', addProduct);
 const txtName = document.getElementById("productName");
 const txtPrice = document.getElementById("productPrice");
+const txtBrand = document.getElementById("productBrand");
 const btnAdd = document.getElementById("add");
+btnAdd.addEventListener('click', addProduct);
 const cart = document.getElementById("cart");
 const totalLabel = document.getElementById("total");
 
 products = [];
 class Product{
-    constructor(n, p){
+    constructor(n, p, b){
         this.name = n;
         this.price = p;
+		this.brand = b;
     }
 }
+
+var getProducts = new XMLHttpRequest();
+getProducts.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
+	console.log(this.responseText);
+	var productData = this.responseText;
+	var productData = JSON.parse(productData);
+	productData.forEach(product => {
+		let product = new Product(product.name, parseFloat(product.price), product.brand);
+		addProductToCart(product);
+	});		
+	updateList();
+    updateTotal();
+    prepareForm();
+  } 
+}
+getProducts.open("GET", "http://127.0.0.1:3000/products", true);
+getProducts.send();
 
 function addProduct(event){
     event.preventDefault();
     let name = txtName.value.trim();
     let price = txtPrice.value.trim();
+	let brand = txtBrand.value.trim()
 
     let validationMsg = validate(name, price);
     if (validationMsg != ''){
@@ -24,7 +45,18 @@ function addProduct(event){
         return;
     }
     
-    let product = new Product(name, parseFloat(price));
+    let product = new Product(name, parseFloat(price), brand);
+	let url = 'http://127.0.0.1:3000/removeProduct?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
+    
+	var addProduct = new XMLHttpRequest();
+	addProduct.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
+		console.log(this.responseText);		
+	  } 
+	}
+	addProduct.open("POST", url, true);
+	addProduct.send();
+	
     addProductToCart(product);
     updateList();
     updateTotal();
@@ -39,6 +71,8 @@ function updateList(){
         namePart.appendChild(document.createTextNode(product.name));
         let pricePart = document.createElement('span');
         pricePart.appendChild(document.createTextNode(`$${product.price}`));
+		let brandPart = document.createElement('span');
+        brandPart.appendChild(document.createTextNode(`$${product.brand}`));
 
         // complete the remove functionality
         btnRemove = document.createElement("button");
@@ -52,6 +86,7 @@ function updateList(){
         li.appendChild(namePart);
         li.appendChild(document.createTextNode(': '));
         li.appendChild(pricePart);
+		li.appendChild(brandPart);
         li.appendChild(btnRemove);
 
         cart.appendChild(li);
@@ -61,10 +96,19 @@ function updateList(){
 function removeProductFromCart(product){
     // find the element
     let idx = products.indexOf(product);
-    // remove the element (which position, how many elements)
+	let url = 'http://127.0.0.1:3000/removeProduct?name=' + product.name;
+    
+	var deleteProduct = new XMLHttpRequest();
+	deleteProduct.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
+		console.log(this.responseText);		
+	  } 
+	}
+	deleteProduct.open("POST", url, true);
+	deleteProduct.send();
+	// remove the element (which position, how many elements)
     products.splice(idx,1);
-    localStorage.setItem("products", JSON.stringify(products));
-    if (products.length==0) localStorage.removeItem("products");
+    
 }
 
 function clearCart(){
@@ -79,21 +123,16 @@ function updateTotal(){
 
 function addProductToCart(product){
     products.push(product);
-    localStorage.setItem('products', JSON.stringify(products));
 }
 
 function prepareForm(){
     txtName.value='';
     txtPrice.value='';
+	txtBrand.value='';
     txtName.focus();
 }
 
-if (localStorage.getItem('products')){
-    products = JSON.parse(localStorage.getItem('products'));
-    updateList();
-    updateTotal();
-    alert('We loaded your existing cart :)');
-}
+
 
 function validate(name, price){
     if (name === '') return 'Product name is needed';
@@ -102,9 +141,10 @@ function validate(name, price){
     return '';
 }
 
+/* probably not needed
 function duplicatedProduct(name){
     // productFound = products.find(x => x.name===name);
     // if (product === undefined) then we did not find anything, so the product is not duplicated
     // if (productFound !== undefined) then the product is duplicated
     return products.find(x => x.name===name) !== undefined;
-}
+} */
