@@ -4,10 +4,14 @@ var cors = require('cors');
 const port = 3000;
 const axios = require('axios').default;
 app.use(cors());
-var MongoClient = require('mongodb').MongoClient
+app.use(express.json()); // body-parser
+var MongoClient = require('mongodb').MongoClient;
+var mongo = require('mongodb');
+const ejs = require('ejs');
+
 var collection;
 
-app.use(express.static('./'))
+app.use(express.static('./'));
 
 const uri = "mongodb+srv://wanderer:hahaesto123@cluster0.6qswt.mongodb.net/cartDB?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true}, { useNewUrlParser: true }, { connectTimeoutMS: 30000 }, { keepAlive: 1});
@@ -23,22 +27,41 @@ app.get('/add', (req, res) => {
     res.sendFile("./add.html", {root: __dirname});    
 });
 
-app.post('/edit', (req, res) => {
-	let nameParam = req.query.name;
-	let priceParam = req.query.price;  
-	let brandParam = req.query.brand;
-	successRedirect : '/edit-product' 
-    res.redirect("/edit-product");   
-	console.log("what");
-	
-});
-
 app.post('/edit-product', (req, res) => {
 	res.sendFile("./edit-product.html", {root: __dirname});  ;  
 	console.log("what");
 	
 });
 
+app.route('/:id/edit').get((req, res) => {
+    let productId  = req.params.id;
+    ejs.renderFile("./edit-product.html", {productId: productId}, null, function(err, str){
+        if (err) res.status(503).send(`error when rendering the view: ${err}`); 
+        else {
+            res.end(str);
+        }
+    });
+});
+
+app.route('/product/:id').put((req, res) => {
+    let productId  = req.params.id;
+    let{ name, price, brand} = req.body;
+    var id = new mongo.ObjectID(productId);
+	collection.update({_id: id},  {$set: {name: name, price: price, brand: brand }}, function(err, res) {
+		if (err) throw err;
+		console.log("1 document updated");
+	});
+})
+
+app.route('/product/:id').get(async function(req, res) {
+    let productId  = req.params.id;
+    let product = await collection.find().toArray();
+	product.forEach(pro => {
+		if(pro._id == productId){
+			res.send(pro);
+		}
+	});	
+})
 
 app.route('/products').get(async function(req, res){  
     let products = await collection.find().toArray(); 

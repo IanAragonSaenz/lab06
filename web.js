@@ -1,9 +1,12 @@
 const cart = document.getElementById("cart");
 const totalLabel = document.getElementById("total");
-
+const btn = document.getElementById("btn");
+btn.addEventListener("click", ()=>{window.location.replace('http://127.0.0.1:3000/add');});
+		
 products = [];
 class Product{
-    constructor(n, p, b){
+    constructor(i, n, p, b){
+		this.id = i;
         this.name = n;
         this.price = p;
 		this.brand = b;
@@ -17,7 +20,7 @@ getProducts.onreadystatechange = function() {
 	var productData = this.responseText;
 	var productData = JSON.parse(productData);
 	productData.forEach(prod => {
-		let product = new Product(prod.name, parseFloat(prod.price), prod.brand);
+		let product = new Product(prod._id, prod.name, parseFloat(prod.price), prod.brand);
 		addProductToCart(product);
 	});		
 	updateList();
@@ -51,15 +54,7 @@ function updateList(){
 		btnEdit = document.createElement("button");
         btnEdit.appendChild(document.createTextNode("Edit"));
         btnEdit.addEventListener("click", ()=>{
-			let url = 'http://127.0.0.1:3000/edit?name=' + product.name + '&price=' + product.price + '&brand=' + product.brand;
-            var deleteProduct = new XMLHttpRequest();
-			deleteProduct.onreadystatechange = function() {
-			  if (this.readyState == 4 && this.status == 200 && this.responseText != "") {
-				console.log(this.responseText);		
-			  } 
-			}
-			deleteProduct.open("POST", url, true);
-			deleteProduct.send();
+			window.location.replace('http://127.0.0.1:3000/' + product.id + '/edit');
         });
 
         li.appendChild(namePart);

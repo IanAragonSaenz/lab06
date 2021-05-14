@@ -4,7 +4,6 @@ const txtBrand = document.getElementById("productBrand");
 const btnAdd = document.getElementById("add");
 btnAdd.addEventListener('click', addProduct);
 
-var name;
 products = [];
 class Product{
     constructor(n, p, b){
@@ -13,8 +12,6 @@ class Product{
 		this.brand = b;
     }
 }
-
-txtName.value = name;
 
 function addProduct(event){
     event.preventDefault();
@@ -56,11 +53,3 @@ function validate(name, price){
     if (isNaN(price)) return 'A valid price is needed';
     return '';
 }
-
-/* probably not needed
-function duplicatedProduct(name){
-    // productFound = products.find(x => x.name===name);
-    // if (product === undefined) then we did not find anything, so the product is not duplicated
-    // if (productFound !== undefined) then the product is duplicated
-    return products.find(x => x.name===name) !== undefined;
-} */
