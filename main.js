@@ -70,9 +70,9 @@ app.route('/products').get(async function(req, res){
 
 app.post('/removeProduct', function (req, res) {
 
-    let nameParam = req.query.name;
+    let productId  = req.query.id;
 	collection.deleteOne({
-		name: nameParam
+		_id: new mongo.ObjectID(productId)
 	}, function(err, obj) {
 		if (err) throw err;
 		console.log("1 document deleted");

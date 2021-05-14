@@ -71,7 +71,7 @@ function updateList(){
 function removeProductFromCart(product){
     // find the element
     let idx = products.indexOf(product);
-	let url = 'http://127.0.0.1:3000/removeProduct?name=' + product.name;
+	let url = 'http://127.0.0.1:3000/removeProduct/?id=' + product.id;
     
 	var deleteProduct = new XMLHttpRequest();
 	deleteProduct.onreadystatechange = function() {
