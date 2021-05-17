@@ -40,11 +40,12 @@ function updateList(){
         let pricePart = document.createElement('span');
         pricePart.appendChild(document.createTextNode(`$${product.price}`));
 		let brandPart = document.createElement('span');
-        brandPart.appendChild(document.createTextNode(`  ${product.brand}`));
+        brandPart.appendChild(document.createTextNode(`  ${product.brand}  `));
 
         // complete the remove functionality
         btnRemove = document.createElement("button");
         btnRemove.appendChild(document.createTextNode("Remove"));
+        btnRemove.className = "removeButton";
         btnRemove.addEventListener("click", ()=>{
             removeProductFromCart(product);
             cart.removeChild(li);
@@ -57,12 +58,18 @@ function updateList(){
 			window.location.replace('http://127.0.0.1:3000/' + product.id + '/edit');
         });
 
+        let eguzz = document.createElement('br');
         li.appendChild(namePart);
         li.appendChild(document.createTextNode(': '));
         li.appendChild(pricePart);
+        li.appendChild(document.createElement('br'));
+        li.appendChild(document.createTextNode('Brand: '));
 		li.appendChild(brandPart);
+        li.appendChild(eguzz);
         li.appendChild(btnRemove);
 		li.appendChild(btnEdit);
+        li.appendChild(document.createElement('br'));
+        li.appendChild(document.createElement('br'));
 
         cart.appendChild(li);
     });
